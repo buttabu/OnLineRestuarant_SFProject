@@ -1,0 +1,173 @@
+{% extends 'menu/base.html'%}
+
+
+
+{% block navbar%}
+
+{% if user.is_authenticated == True %}
+<ul class="nav navbar-nav navbar-right">
+  <li class="nav-item"><a class="nav-link" href="/cart"><span class="glyphicon glyphicon-user"></span>Cart</a></li>
+  <li class="nav-item"><a class="nav-link" href="/profile"><span class="glyphicon glyphicon-user"></span>Profile</a></li>
+  <li class='nav-item'><a class="nav-link"href="/logout"><span class="glyphicon glyphicon-log-in"></span>Logout</a></li>
+</ul>
+
+{% else  %}
+<ul class="nav navbar-nav navbar-right">
+  <li class="nav-item"><a class="nav-link" href="/apply"><span class="glyphicon glyphicon-user"></span>Careers</a></li>
+  <li class="nav-item"><a class="nav-link" href="/register"><span class="glyphicon glyphicon-user"></span>Signup</a></li>
+  <li class='nav-item'><a class="nav-link"href="/login"><span class="glyphicon glyphicon-log-in"></span>Login</a></li>
+</ul>
+
+{% endif %}}
+
+{% endblock navbar%}
+
+
+{% block jumbotron %}
+<div class="container">
+<div class="jumbotron">
+  <div class="container">
+    <br><h1 class="display-3 text-center" >{{food.name}} - {{food.cuisine}} </h1><br>
+    <p>Food Description goes here. </p>
+  </div>
+</div>
+</div>
+{% endblock jumbotron %}
+{% load static %}
+{% block foods %}
+
+<div class="container">
+  <div class="row">
+    <div class="col-xs-6 col-md-2 col-lg-2">
+      <div class="thumbnail">
+        <p><img width="150" height="130" src="{{food.image.url}}" alt="img"></p>
+        <p><img width="150" height="130" src="{{food.image.url}}" alt="img"></p>
+        <p><img width="150" height="130" src="{{food.image.url}}" alt="img"></p>
+      </div>
+    </div>
+    <div class="col-sm-6 col-md-2 col-lg-2">
+      <div class="thumbnail">
+        <p><img width="150" height="130" src="{{food.image.url}}" alt="img"></p>
+        <p><img width="150" height="130" src="{{food.image.url}}" alt="img"></p>
+        <p><img width="150" height="130" src="{{food.image.url}}" alt="img"></p>
+      </div>
+    </div>
+    <div class="col-sm-6 col-md-8 col-lg-8">
+      <div class="container">
+      <div class="jumbotron">
+        <div class="container">
+          <h1 class="display-5 " >Food Info</h1><br>
+          <h5>Description: <small> {{food.description}}</small></h5>
+          <h5>Cuisine: <small> {{food.cuisine}}</small></h5>
+          <h5>Price: <small> ${{food.price}}</small></h5>
+          <h5>Rating: <small> {{food.avg_rating}}</small></h5>
+          <h5>Chef: <small> {{food.chef}}</small></h5>
+          <h5>Ordered: <small> {{food.numOrdered}}</small></h5><br>
+
+          {% if user.is_authenticated == True and  isOrdered %}
+          <p><button class="btn btn-md btn-primary"
+             name="button" id='review' data-target='#popup' data-toggle='modal'>Review</button>
+            <button class="btn btn-md btn-success" name="button2" id='order'
+             data-target='#popup2' data-toggle='modal'>Order</button></p>
+
+          {% elif not user.is_authenticated %}
+
+          <p><button class="btn btn-md btn-primary custompop"
+             name="button" data-toggle='modal' >Review</button>
+            <button class="btn btn-md btn-success custompop" name="button2" >Order</button></p>
+
+          {% elif not isOrdered %}
+
+          <script type="text/javascript">
+            function notOrdered (){
+              window.alert('Order before you can review');
+            }
+          </script>
+
+          <p><button class="btn btn-md btn-primary"
+             name="button" onclick=notOrdered()>Review</button>
+             <button class="btn btn-md btn-success" name="button2" id='order'
+              data-target='#popup2' data-toggle='modal'>Order</button></p>
+          {% endif %}
+
+
+        </div>
+      </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+<div class="jumbotron">
+  <div class="container">
+    <br><h1 class="display-4 ">Customer Reviews </h1><br>
+
+      {% for review in reviews %}
+      <ul>
+        <li>Customer: {{review.customer.first_name}}</li>
+        <li>Quality: {{review.qValue}}/5</li>
+        <li>Review: {{review.foodQuality}}</li>
+        <li>Delivery: {{review.dValue}}/5</li>
+        <li>Review: {{review.deliverySpeed}}</li>
+        </ul>
+      {% endfor %}
+    </div>
+  </div>
+  </div>
+
+  <div class="modal fade" tabindex="-1" role="dialog" id='popup'>
+  <div class="modal-dialog modal-sm" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Enter a Review</h3>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      </div>
+      <form action="{{food.get_absolute_url}}" method="POST"> {% csrf_token %}
+      <div class="modal-body">
+        {{form.as_p}}
+      </div>
+      <div class="modal-footer">
+        <input type="submit" value=Submit! class="btn btn-primary">
+      </div></form>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
+
+<div class="modal fade" tabindex="-1" role="dialog" id='popup2'>
+<div class="modal-dialog modal-sm" role="document">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>Add to Cart</h3>
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    </div>
+      <br>
+      <div class="form-group row">
+        <div class="col-12">
+          <div class="modal-body">
+          <form action="/cart/" method="POST"> {% csrf_token%}
+            <p>Enter Quantity:</p>
+            <input class="form-control" type="number" name='q' min='1' max='5' step='1' ><br>
+            <input type="hidden" name="food" value={{food.name}} />
+            <input type="hidden" name="action" value='addToCart' />
+            <input type="button" class="close" data-dismiss="modal" value='Go Back!' class="btn btn-primary">
+            <input type="submit" value='Cart!' class="btn btn-success">
+          </form>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+
+    </div></form>
+  </div><!-- /.modal-content -->
+</div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+</div>
+
+
+
+
+
+{% endblock foods %}

@@ -1,0 +1,16 @@
+{% extends "menu/base.html" %}
+
+{% block jumbotron %}
+<div class="container">
+<div class="jumbotron">
+  <div class="container text-center">
+    <div>
+	<br><br><br><form method="POST" action="/login/">
+		{% csrf_token %}
+		Username: <input type="text" name="username"> <br><br>
+		Password: <input type="Password" name="password"> <br><br>
+		<input type="submit" name="submit" value="Login">
+	</form>
+</div>
+</div>
+{% endblock jumbotron %}

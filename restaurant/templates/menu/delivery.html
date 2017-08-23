@@ -1,0 +1,169 @@
+{% extends 'menu/base.html' %}
+
+
+
+{% block head_title %}
+  {{block.super}} || Home
+{% endblock head_title %}
+{% load static %}
+
+{% block navbar%}
+<ul class="nav navbar-nav navbar-right">
+  <li class='nav-item'><a class="nav-link"href="/logout"><span class="glyphicon glyphicon-log-in"></span>Logout</a></li>
+</ul>
+{% endblock navbar%}
+
+
+{% block jumbotron %}
+<div class="container">
+<div class="jumbotron">
+  <div class="container">
+    <h1 class="display-3">Hi, {{request.user.first_name}}!</h1>
+    <p></p>
+    <br>
+  </div>
+</div>
+</div>
+{% endblock jumbotron %}
+
+{% block orders %}
+<div class="container">
+  <div class="jumbotron">
+    <div class="container">
+      <h2 class="display-5 ">Available Deliveries </h2>
+      <div class="row">
+        {% for order in orders %}
+        <div class="col-sm-6 col-md-3">
+          <div class="thumbnail">
+            <img width="242" height="200" src="{{order.food.image.url}}" alt="img">
+            <div class="caption">
+              <ul>
+                <li>Customer: {{order.customer.first_name}}</li>
+                <li>Food: {{order.food.name}}</li>
+                <li>Price: {{order.food.price}}</li>
+                <li>Date: {{order.time_stamp}}</li>
+                <li>Status: {{order.status}}</li>
+                </ul>
+                <form class="" action="/process/" method="post">
+                  {% csrf_token %}
+                  <input type='hidden' od={{order.id}}></input>
+                  <p class='text-center'><button name='submit' class="btn btn-success"  value={{order.id}} role="button">Process</button></p>
+                </form>
+
+            </div>
+          </div>
+        </div>
+            {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock orders %}
+
+{% block deliveries %}
+
+
+<div class="container">
+  <div class="jumbotron">
+    <div class="container">
+    <h2 class="display-5 ">Delivery History </h2><br>
+    <div class="row">
+    {% for order in deliveries %}
+    <div class="col-sm-6 col-md-3">
+      <div class="thumbnail">
+        <img width="242" height="200" src="{{order.food.image.url}}" alt="img">
+        <div class="caption">
+          <ul>
+            <li>Customer: {{order.customer.first_name}}</li>
+            <li>Food: {{order.food.name}}</li>
+            <li>Price: ${{order.food.price}}</li>
+            <li>Date: {{order.time_stamp}}</li>
+            <li>Status: {{order.status}}</li>
+            </ul>
+            <p class="text-center" ><button class="btn btn-md btn-primary "
+               name="button" id='feedback' onclick="getOrderID({{order.id}})" data-target='#popup' data-toggle='modal'>Feedback</button></p>
+        </div>
+
+      </div>
+    </div>
+        {% endfor %}
+  </div>
+</div>
+</div>
+</div>
+
+
+
+
+<script type="text/javascript">
+  function getOrderID(id){
+    form = document.getElementById('myform');
+    form.setAttribute('action', "/deliveryFeedback/" + String(id))
+  }
+</script>
+
+
+
+<div class="modal fade" tabindex="-1" role="dialog" id='popup'>
+<div class="modal-dialog modal-sm" role="document">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h4>Enter your Feedback</h4>
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    </div>
+      <form id="myform" action="/deliveryFeedback/" method="POST"> {% csrf_token %}
+      <div class="modal-body">
+        <p>Content</p>
+            <input class="form-control" type="text" name='content' ><br>
+              <div class="radio"><br>
+                <label><input type="radio" name="optradio" value="Complaint">Complaint</label>
+              </div>
+              <div class="radio">
+                <label><input type="radio" name="optradio" value="Complement">Complement</label>
+              </div>
+    </div>
+    <div class="modal-footer">
+      <input type="submit" value=Submit! class="btn btn-primary">
+    </div></form>
+  </div><!-- /.modal-content -->
+</div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
+
+
+
+
+{% endblock deliveries %}
+
+
+
+
+{% block  messages %}
+
+<div class="container">
+  <div class="jumbotron">
+    <div class="container">
+    <h2 class="display-5 ">Notifications </h2><br>
+    <div class="row">
+    {% for message in messages %}
+    <div class="col-sm-6 col-md-3">
+      <div class="thumbnail">
+        <div class="caption">
+          <ul>
+            <li>Type: {{message.message_type}}</li>
+            <li>Issuer: {{message.source}}</li>
+            <li>Content: {{message.reason}}</li>
+            <li>Status: {{message.status}}</li>
+            </ul>
+        </div>
+      </div>
+    </div>
+        {% endfor %}
+  </div>
+</div>
+</div>
+</div>
+
+{% endblock messages %}

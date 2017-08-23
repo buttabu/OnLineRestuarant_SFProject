@@ -1,0 +1,218 @@
+{% extends 'menu/base.html'%}
+
+
+
+{% block navbar%}
+
+<ul class="nav navbar-nav navbar-right">
+  <li class='nav-item'><a class="nav-link"href="/logout"><span class="glyphicon glyphicon-log-in"></span>Logout</a></li>
+</ul>
+
+{% endblock navbar%}
+
+
+{% block jumbotron %}
+<div class="container">
+<div class="jumbotron">
+  <div class="container">
+    <br><h1 class="display-3 text-center" >Hello, Boss. </h1><br>
+    <p>Here is your Dashboard...</p>
+  </div>
+</div>
+</div>
+{% endblock jumbotron %}
+{% load static %}
+{% block requests %}
+
+<div class="container">
+  <div class="row">
+    <div class="col-sm-4 col-md-4 col-lg-4">
+        <div class="jumbotron">
+          <div class="container">
+            <h2 class="display-5 " ><small>Register Requests:</small></h2><br>
+              {% for customer in requests  %}
+            <h5>Username:  {{customer.user.username}}</h5>
+            <h5>Name:  {{customer.user.first_name}} {{customer.user.last_name}}</h5>
+            <h5>Date: {{customer.user.date_joined}}</h5>
+            <h5>Deposit: {{customer.balance}}</h5>
+
+            <a href="/userrequest/pc{{customer.id}}"><button  type='submit' class="btn btn-md btn-success"
+                name="approve" value={{customer.id}}>Approve</button></a>
+
+              <a href="/userrequest/dc{{customer.id}}"><button type='submit' class="btn btn-md btn-danger"
+                 name="decline" value={{customer.id}}>Decline</button></a>
+            <br><br><br>
+
+            {% endfor %}
+
+          </div>
+        </div>
+    </div>
+
+    <div class="col-sm-4 col-md-4 col-lg-4">
+        <div class="jumbotron">
+          <div class="container">
+            <h2 class="display-5 " ><small>Job Applications:</small></h2><br>
+              {% for staff in jobApps  %}
+            <h5>Username:  {{staff.user.username}}</h5>
+            <h5>Name :  {{staff.user.first_name}} {{customer.user.last_name}}</h5>
+            <h5>Date : {{staff.user.date_joined}}</h5>
+            <h5>Position: {{staff.user_type}}</h5>
+            <h5>Salary : {{staff.salary}}</h5>
+
+            <a href="/userrequest/ps{{staff.id}}"><button  type='submit' class="btn btn-md btn-success"
+                name="approve" value={{staff.id}}>Approve</button></a>
+
+              <a href="/userrequest/ds{{staff.id}}"><button type='submit' class="btn btn-md btn-danger"
+                 name="decline" value={{staff.id}}>Decline</button></a><br><br><br>
+
+            {% endfor %}
+          </div>
+        </div>
+
+    </div>
+
+
+{% endblock requests %}
+
+{% block balances %}
+
+            <div class="col-sm-4 col-md-4 col-lg-4">
+                <div class="jumbotron">
+                  <div class="container">
+                    <h2 class="display-5 " ><small>Balance Requests:</small></h2><br>
+                      {% for request in balances  %}
+                    <h5>User:  {{request.source.first_name}}</h5>
+                    <h5>Amount: {{request.reason}}</h5>
+                    <a href="/userrequest/ba{{request.source.id}}"><button  type='submit' class="btn btn-md btn-success"
+                        name="approve">Approve</button></a>
+
+                      <a href="/userrequest/bd{{request.source.id}}"><button type='submit' class="btn btn-md btn-danger"
+                         name="decline">Decline</button></a><br>
+
+                    {% endfor %}
+
+                  </div>
+                  </div>
+
+                  </div>
+{% endblock %}
+
+
+
+{% block messages %}
+
+
+<div class="container">
+<div class="jumbotron">
+  <div class="container">
+    <br><h1 class="display-4 ">Resolution Center: </h1><br>
+        <div class="row">
+        {% for message in messages %}
+        <div class="col-sm-6 col-md-3">
+          <div class="thumbnail">
+            <div class="caption">
+              <ul>
+                <li>Type: {{message.message_type}}</li>
+                <li>Issuer: {{message.source}}</li>
+                <li>Target: {{message.target}}</li>
+                <li>Content: {{message.reason}}</li>
+                <li>Status: {{message.status}}</li>
+                </ul>
+                <a href="/resolution/a{{message.id}}"><button  type='submit' class="btn btn-md btn-success"
+                    name="approve">Approve</button></a>
+
+                  <a href="/resolution/d{{message.id}}"><button type='submit' class="btn btn-md btn-danger"
+                     name="decline">Decline</button></a><br><br><br>
+            </div>
+          </div>
+        </div>
+            {% endfor %}
+      </div>
+  </div>
+</div>
+</div>
+
+
+
+
+
+
+<div class="container">
+<div class="jumbotron">
+  <div class="container">
+    <br><h1 class="display-4 " >Accounts Management: </h1><br>
+        <div class="row">
+        <div class="col-sm-6 col-md-6 col-lg-6">
+          <br><h2 class="display-5 " >Staff: </h2><br><br>
+        {% for member in staff %}
+        <div class="col-sm-12 col-md-12">
+          <div class="thumbnail">
+            <div class="caption">
+              <ul>
+                <li>Name: {{member.user.first_name}}</li>
+                <li>Position: {{member.user_type}}</li>
+                <li>Salary: {{member.salary}}</li>
+                <li>Status: {% if member.fired %}Suspended{% elif not member.is_approved %}Inactive{% else %}Active{% endif %}</li>
+                </ul>
+
+                <a href="/useraccounts/spp{{member.id}}"><button  type='submit' class="btn btn-md btn-success"
+                    name="approve">Promote</button></a>
+
+
+                <a href="/useraccounts/sdd{{member.id}}"><button type='submit' class="btn btn-md btn-warning"
+                                         ndame="decline">Demote</button></a>
+
+                  <a href="/useraccounts/sff{{member.id}}"><button type='submit' class="btn btn-md btn-danger"
+                     name="decline">Fire!</button></a><br><br><br>
+            </div>
+          </div>
+        </div>
+            {% endfor %}
+      </div>
+
+      <div class="col-sm-6 col-md-6 col-lg-6">
+        <br><h2 class="display-5 " >Customers: </h2><br><br>
+      {% for member in customers %}
+      <div class="col-sm-12 col-md-12">
+        <div class="thumbnail">
+          <div class="caption">
+            <ul>
+              <li>Name: {{member.user.first_name}}</li>
+              <li>Is VIP: {{member.is_vip}}</li>
+              <li>Balance: {{member.balance}}</li>
+              <li>Spending: {{member.spending}}</li>
+              <li>Status: {% if member.deregistered %}Suspended{% elif not member.is_approved %}Inactive{% else %}Active{% endif %}</li>
+
+              {% if member.is_vip %}
+              <a href="/useraccounts/cnv{{member.id}}"><button  type='submit' class="btn btn-md btn-warning"
+                  name="approve">No VIP</button></a>
+
+              <a href="/useraccounts/cdd{{member.id}}"><button type='submit' class="btn btn-md btn-danger"
+                   name="decline">Deregister</button></a><br><br><br>
+
+                {% else %}
+
+                <a href="/useraccounts/cyv{{member.id}}"><button  type='submit' class="btn btn-md btn-success"
+                    name="approve">Make VIP</button></a>
+
+                <a href="/useraccounts/cdd{{member.id}}"><button type='submit' class="btn btn-md btn-danger"
+                     name="decline">Deregister</button></a><br><br><br>
+
+
+
+                {% endif %}
+
+          </div>
+        </div>
+      </div>
+          {% endfor %}
+      </div>
+
+    </div>
+  </div>
+</div>
+</div>
+
+
+{% endblock messages %}

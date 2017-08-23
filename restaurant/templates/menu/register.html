@@ -1,0 +1,21 @@
+{% extends "menu/base.html" %}
+
+{% block jumbotron %}
+<div class="container">
+<div class="jumbotron">
+  <div class="container">
+    <div>
+		<h2>Register now to start ordering food</h2><br>
+		<form class="form-group" method="POST">
+
+			{% csrf_token %}
+			{{ uform.as_p }}
+			{{ pform.as_p }}
+
+			<input type="submit" name="submit" value ="Register">
+		</form>
+	</div>
+</div>
+</div>
+</div>
+{% endblock jumbotron %}

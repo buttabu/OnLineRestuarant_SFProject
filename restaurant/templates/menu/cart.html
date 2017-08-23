@@ -1,0 +1,77 @@
+
+{% extends "menu/base.html" %}
+
+{% block jumbotron %}
+<div class="container">
+<div class="jumbotron">
+  <div class="container">
+    <br><br><br><h1 class="display-3">Hello, {{user.first_name}}</h1><br>
+    <p>We've got the tastiest, cheapest and grossest(!)
+       food in town! like tons of diferent cuisines and junk foods, Diabetes Guaranteed</p>
+    <br><p>
+  </div>
+</div>
+</div>
+{% endblock jumbotron %}
+{% load static %}
+
+{% block navbar%}
+<ul class="nav navbar-nav navbar-right">
+  <li class="nav-item"><a class="nav-link" href="/cart"><span class="glyphicon glyphicon-user"></span>Cart</a></li>
+  <li class="nav-item"><a class="nav-link" href="/profile"><span class="glyphicon glyphicon-user"></span>Orders</a></li>
+  <li class='nav-item'><a class="nav-link"href="/logout"><span class="glyphicon glyphicon-log-in"></span>Logout</a></li>
+</ul>
+{% endblock navbar%}
+
+{% block cart %}
+
+<div class="container">
+<div class="jumbotron">
+  <div class="container">
+    <br><h1 class="display-4 ">Cart: </h1><br>
+    <div class="container">
+      <div class="row">
+        {% for order in orders %}
+        <div class="col-sm-6 col-md-3">
+          <div class="thumbnail">
+            <img width="242" height="200" src="{{order.food.image.url}}" alt="img">
+            <div class="caption">
+              <h3>{{order.food.name}}</h3>
+              <ul>
+                <li>Food: {{order.food.name}}</li>
+                <li>Price: {{order.food.price}}</li>
+                <li>Quantity: {{order.quantity}}</li>
+                <li>Status: {{order.status}}</li>
+                </ul>
+            </div>
+          </div>
+        </div>
+            {% endfor %}
+      </div>
+      {% if numCart != 0 %}
+      <form action="/checkout/" method="POST"> {% csrf_token%}
+        <input type="hidden" name="action" value='address' />
+        {% if broke == True %}
+        <script type="text/javascript">
+          window.alert('Insufficient Balance!')
+        </script>
+        {% endif %}
+        <input type="submit" value='Checkout!' class="btn btn-success">
+      </form>
+
+      {% else %}
+      <p>Empty</p>
+      {% endif %}
+
+    </div>
+    </div>
+  </div>
+  </div>
+
+
+
+
+
+
+
+{% endblock cart %}

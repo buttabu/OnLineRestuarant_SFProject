@@ -1,0 +1,58 @@
+{% extends "menu/base.html" %}
+
+
+
+{% block navbar%}
+
+{% if user.is_authenticated == True %}
+<ul class="nav navbar-nav navbar-right">
+  <li class="nav-item"><a class="nav-link" href="/cart"><span class="glyphicon glyphicon-user"></span>Cart</a></li>
+  <li class="nav-item"><a class="nav-link" href="/profile"><span class="glyphicon glyphicon-user"></span>Profile</a></li>
+  <li class='nav-item'><a class="nav-link"href="/logout"><span class="glyphicon glyphicon-log-in"></span>Logout</a></li>
+</ul>
+
+{% else  %}
+<ul class="nav navbar-nav navbar-right">
+  <li class="nav-item"><a class="nav-link" href="/apply"><span class="glyphicon glyphicon-user"></span>Careers</a></li>
+  <li class="nav-item"><a class="nav-link" href="/register"><span class="glyphicon glyphicon-user"></span>Signup</a></li>
+  <li class='nav-item'><a class="nav-link"href="/login"><span class="glyphicon glyphicon-log-in"></span>Login</a></li>
+</ul>
+
+{% endif %}}
+
+{% endblock navbar%}
+
+{% block jumbotron %}
+<div class="container">
+<div class="jumbotron">
+  <div class="container">
+    <br><br><br><h1 class="display-3">Menu for {{name}} Food</h1><br>
+    <p>We've got the tastiest, cheapest and grossest(!)
+       food in town! like tons of diferent cuisines and junk foods, Diabetes Guaranteed</p>
+    <br><p>
+  </div>
+</div>
+</div>
+{% endblock jumbotron %}
+{% load static %}
+{% block foods %}
+
+      <div class="container">
+        <div class="row">
+          {% for food in foods %}
+          <div class="col-sm-6 col-md-3">
+            <div class="thumbnail">
+              <img width="242" height="200" src="{{food.image.url}}" alt="img">
+              <div class="caption">
+                <h3>{{food.name}}</h3>
+                <p class="limtiCharClass">{{food.description}}</p>
+                <p><a href="{{food.get_absolute_url}}" class="btn btn-primary" role="button">View &raquo;</a>
+                  <a href="#" class="btn btn-success" role="button">Order &raquo;</a></p>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+
+{% endblock foods %}
